@@ -1,0 +1,97 @@
+<Html>
+
+<head>
+    <!--     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@1.0.0/dist/tf.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs/dist/tf.min.js"></script> -->
+    <script src="./lib/tf.min.js"></script>
+</head>
+
+<body>
+
+    <script type="text/javascript">
+
+        //EXERCISE 1
+        function exercise1() {
+            //1D   
+            //const xs = tf.tensor1d([1,2,3]); OR
+            //const xs = tf.tensor([1,2,3],[3]);
+            //const ys = xs.mul(tf.scalar(5));
+
+            //2D
+            //const xs = tf.tensor([1,2,3,4,5,6],[2,3]);
+            //const ys = xs.mul(tf.scalar(5));
+
+            //2D + 2D
+            const xs = tf.tensor([1, 2, 3, 4], [2, 2]);
+            const ys = xs.add(tf.tensor([1, 1, 1, 1], [2, 2]));
+
+            ys.print();
+
+            document.write(ys.toString());
+
+        }
+        //Control memory usage and not allow the nodes created inside the fucntion to exist outside its scope
+        //tf.tidy(exercise1);
+
+        //EXERCISE 2
+        function getYs(xs, m, c) {
+            return xs.mul(m).add(c);
+        }
+
+        function exercise2() {
+            const t1 = tf.tensor1d([1, 5, 10]);
+            const t2 = getYs(t1, 2, 1);
+            t2.print();
+            document.write(t2.toString());
+        }
+
+
+        //tf.tidy(exercise2);
+
+        //EXERCISE 3
+        function exercise3() {
+            let t3 = tf.tensor1d([25, 76, 4, 23, -5, 22]);
+            t3.max().data().then((res) => {
+                max = res[0];
+
+                t3.min().data().then((res) => {
+                    min = res[0];
+
+                    console.log(max - min);
+                    document.write(t3.sub(min).div(max - min));
+
+                });
+            });
+        }
+
+        //exercise3();
+
+        //EXERCISE 4
+        function exercise4() {
+            for(let i = 0; i < 100; i++){
+                tf.tensor1d([1,2,3]).dispose();
+            }    
+        }
+        tf.dispose();
+
+        function exercise4_1() {
+            for(let i = 0; i < 100; i++){
+               tf.tensor1d([4,5,6]);
+            }    
+        }
+
+        exercise4();
+        tf.tidy(exercise4_1);
+
+        console.log(tf.memory());
+
+    </script>
+
+    <!--     <h2>Number of tensors in memory</h2>
+    <script type="text/javascript">
+        document.write(tf.memory().numTensors)
+    </script> -->
+
+</body>
+
+</Html>

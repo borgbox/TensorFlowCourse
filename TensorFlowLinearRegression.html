@@ -1,0 +1,66 @@
+<Html>
+
+<head>
+    <!--     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@1.0.0/dist/tf.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs/dist/tf.min.js"></script>-->
+    <!--<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-vis"></script>-->
+    <script src="./lib/tf.min.js"></script>
+    <script src="./lib/tfjs-vis.js"></script>
+</head>
+
+<body>
+
+
+
+    <script type="text/javascript">
+
+        async function plot(pointsArray, featureName) {
+            tfvis.render.scatterplot({ name: `${featureName}` }, { values: [pointsArray], series: ["original"] }, { xLabel: featureName, yLabel: "Price" });
+        }
+
+        async function run() {
+
+            const houseSalesDataSet = tf.data.csv("http://localhost:8080/data/kc_house_data.csv");
+            const sampleDataSet = houseSalesDataSet.take(10);
+            const dataArray = await sampleDataSet.toArray();
+            console.log(dataArray);
+            //Price is what we want to predict
+            const points = houseSalesDataSet.map(record => ({
+                x: record.sqft_living,
+                y: record.price
+            }));
+
+            console.log(await points.toArray());
+            plot(await points.toArray(), "Square feet");
+
+            //Get all features points
+            const featureValues = await points.map(p => p.x).toArray();
+            //First paramter is the points then the points(1st dimension) and 2nd dimension which are the number of features
+            const featureTensor = tf.tensor2d(featureValues, [featureValues.length, 1]);
+
+            //Get all label points
+            const labelValues = await points.map(p => p.y).toArray();
+            //First paramter is the points then the points(1st dimension) and 2nd dimension which are the number of features
+            const labelTensor = tf.tensor2d(labelValues, [labelValues.length, 1]);
+
+            featureTensor.print();
+            labelTensor.print();    
+
+        }
+
+
+        //Control memory usage and not allow the nodes created inside the fucntion to exist outside its scope
+        run();
+
+        console.log(tf.memory());
+
+    </script>
+
+    <!--     <h2>Number of tensors in memory</h2>
+    <script type="text/javascript">
+        document.write(tf.memory().numTensors)
+    </script> -->
+
+</body>
+
+</Html>
